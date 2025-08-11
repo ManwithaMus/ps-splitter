@@ -46,13 +46,15 @@
 
 .NOTES
     Author: giuseppe.strafforello@titantechnologies.com
+    Modified By: asipos1@umd.edu
     Version: 1.0
     Requires: PowerShell 3.0 or higher
     Copyright (C) 2025 Titan Technologies. All rights reserved.
     This script is licensed under the Apache License, Version 2.0.
 #>
 
-[CmdletBinding()]
+function Split-File{ # Wrapped everything in Split-File function to support correctly importing modules
+    [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true, Position = 0, HelpMessage = "Path to the input file to split")]
     [ValidateScript({
@@ -87,6 +89,7 @@ param(
     [switch]$Quiet
 )
 
+# Check
 # Function to convert size string to bytes
 function ConvertTo-Bytes {
     param([string]$SizeString)
@@ -167,7 +170,7 @@ try {
             exit 0
         }
     }
-
+    
     # Open the input file for reading
     $inputStream = [System.IO.File]::OpenRead($InputFile)
     
@@ -201,9 +204,10 @@ try {
         }
 
         if (-not $Quiet) {
+            $checkMark = [char]0x2713 # Added variable for unicode checkmark character
             Write-Progress -Activity "Splitting file" -Completed
             Write-Host ""
-            Write-Host "✓ File successfully split into $chunkIndex chunks." -ForegroundColor Green
+            Write-Host "$checkMark File successfully split into $chunkIndex chunks." -ForegroundColor Green
             Write-Host "Total size processed: $(Format-Bytes $totalBytesProcessed)" -ForegroundColor Green
             Write-Host "Output location: $OutputDirectory" -ForegroundColor Green
         } else {
@@ -219,3 +223,36 @@ try {
     Write-Error 'An error occurred: $($_.Exception.Message)'
     exit 1
 }
+}
+# SIG # Begin signature block
+# MIIFlAYJKoZIhvcNAQcCoIIFhTCCBYECAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
+# gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUF5VgVAs7DLWgR3CqkJmUxM3O
+# s3CgggMiMIIDHjCCAgagAwIBAgIQG+y85FDshr5DK71RaSe6WjANBgkqhkiG9w0B
+# AQsFADAnMSUwIwYDVQQDDBxUaXRhbiBUZWNobm9sb2dpZXMgSW50ZXJ2aWV3MB4X
+# DTI1MDgxMTE2MzYzM1oXDTI2MDgxMTE2NTYzM1owJzElMCMGA1UEAwwcVGl0YW4g
+# VGVjaG5vbG9naWVzIEludGVydmlldzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC
+# AQoCggEBAMdotUjXNFZEFKVchjH1+pbUx1iqCy4EKQ2VD6gjZFxpL737cJzBx3A8
+# 1mcyzGU6rQdhCC/JhZrI4nA65/o9lhpYBx2eHm8TMNOuSRPYbMURRrbj0cyfil1Q
+# 3d4ZK1zSOs2nhYMI5JnFJQ6UPYCefvnJBlItAQ7g12doWmbwn4OcFxvjphC6UbaG
+# W1zWdMTDl0iOv7zpJfWwnQ79qNr/ijworJ7LN+Qt0iEYsFVLsUxpx7CFIt4IOaxF
+# u+TlcgEa42TyboDrgLT7/rECEAXMA6OsNiz4Wc5l3K5n0r3OzNeK39oemF3UbmpN
+# FdXG+bOr0C9QXueeSwHTPcwKIqW2Dw0CAwEAAaNGMEQwDgYDVR0PAQH/BAQDAgeA
+# MBMGA1UdJQQMMAoGCCsGAQUFBwMDMB0GA1UdDgQWBBRNxh54jD1ZpzvxjP/ST5lm
+# azkN4DANBgkqhkiG9w0BAQsFAAOCAQEAoLRNXqNzCKL0nUv63q6EooQgYNRWtz7B
+# 8VEsfHRjIs+WnmWNGvLGC84ILFzOUBoHdWJzWrRGEJNH/n7ECMam5hH/JOI9veJl
+# R2lFoTwrhSkErP2weaLYHo1K/dvxIXINB3Fo83I/7Rxbs4zzCuxpg8gTZyittMpK
+# dhZyuSXEI34x8oMorNpebB8PNkB8e41wLQpVIYjYk1wi7ypyYILCmNLdjsxQNa+L
+# t77PUWHwmtOlMIf6n9hif6TFebCWxc5FBdY0QzS8xHecjAD1FWaQaiVzB4pRVF/l
+# llKng2c8qLWts7piGilJJuhCPUUhZMr56LTBOD4DLM4cpk3+Z68F2DGCAdwwggHY
+# AgEBMDswJzElMCMGA1UEAwwcVGl0YW4gVGVjaG5vbG9naWVzIEludGVydmlldwIQ
+# G+y85FDshr5DK71RaSe6WjAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAig
+# AoAAoQKAADAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgEL
+# MQ4wDAYKKwYBBAGCNwIBFTAjBgkqhkiG9w0BCQQxFgQU0lNWyK8XIKh4o2cFciZ3
+# kcQY5v8wDQYJKoZIhvcNAQEBBQAEggEAjp81+flQ7xRUybxBG77sjP1umqQZHNMw
+# fO7UjqGHSeAFJJqbOYIaYSDD9kBT2NP3sKpWBjG2gK2bNzL9BkDPauon5iQtpxmR
+# IeOSv+twzwIuKwEhew1cuioaQxI0OjXV8VqoRiMasjtkryKLCF1L4uHdNm3PzHOE
+# HvwHFQ1gYAnfxYw3neuL8I3krsbNoodu7NHOeLurl2dDHivUU3mb7z9x3bQ8LY+/
+# L6qTzdBuzRp3VVFB1fMgflf6ErPBmZ7z0Xz7M22z4i/6k8+4zcYIyvAqLBSwfoqq
+# J4OFF3ZuUtiqTX4gBMRlrIlU9b75JgCgr3rm9LsK+7a/wUGhelrG/g==
+# SIG # End signature block
